@@ -46,19 +46,18 @@ function App() {
         ]
     })
 
-
-    function removeTask(id: string, todoListId:string) {
-        let task = tasksObj[todoListId]
-        let filteredTasks = task.filter(t => t.id != id);
-        tasksObj[todoListId] = filteredTasks
-        setTasksObj({...tasksObj});
-    }
-
     function addTask(title: string, todoListId:string) {
         let task = tasksObj[todoListId]
 
         let newTask = {id: v1(), title: title, isDone: false};
         tasksObj[todoListId] = [newTask, ...task];
+        setTasksObj({...tasksObj});
+    }
+
+    function removeTask(id: string, todoListId:string) {
+        let task = tasksObj[todoListId]
+        let filteredTasks = task.filter(t => t.id != id);
+        tasksObj[todoListId] = filteredTasks
         setTasksObj({...tasksObj});
     }
 
@@ -69,9 +68,7 @@ function App() {
         if (task) {
             task.isDone = isDone;
             setTasksObj({...tasksObj});
-
         }
-
     }
 
     function changeFilter(value: FilterValuesType, todoListId: string) {
@@ -86,9 +83,10 @@ function App() {
     function removeTodolist(todoListId: string) {
         let filtered = todoLists.filter(tl => tl.id!== todoListId)
 
-        setTodoLists([...filtered])
+        setTodoLists(filtered)
 
         delete tasksObj[todoListId]
+        setTasksObj({...tasksObj})
     }
 
 
