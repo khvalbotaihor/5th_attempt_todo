@@ -39,7 +39,7 @@ function App() {
             {id: v1(), title: "Rest API", isDone: false},
             {id: v1(), title: "GraphQL", isDone: false},
         ],
-        [todoListId1] : [
+        [todoListId2] : [
             {id: v1(), title: "Bread", isDone: true},
             {id: v1(), title: "Milk", isDone: true},
 
@@ -55,18 +55,23 @@ function App() {
     }
 
     function addTask(title: string, todoListId:string) {
-        let task = {id: v1(), title: title, isDone: false};
-        let newTasks = [task, ...tasksObj];
-        setTasksObj(newTasks);
+        let task = tasksObj[todoListId]
+
+        let newTask = {id: v1(), title: title, isDone: false};
+        tasksObj[todoListId] = [newTask, ...task];
+        setTasksObj({...tasksObj});
     }
 
     function changeStatus(taskId: string, isDone: boolean, todoListId:string) {
-        let task = tasksObj.find(t => t.id === taskId);
+        let currentTask = tasksObj[todoListId]
+
+        let task = currentTask.find(t => t.id === taskId);
         if (task) {
             task.isDone = isDone;
+            setTasksObj({...tasksObj});
+
         }
 
-        setTasksObj([...tasksObj]);
     }
 
     function changeFilter(value: FilterValuesType, todoListId: string) {
@@ -78,11 +83,19 @@ function App() {
     }
 
 
+    function removeTodolist(todoListId: string) {
+        let filtered = todoLists.filter(tl => tl.id!== todoListId)
+
+        setTodoLists([...filtered])
+
+        delete tasksObj[todoListId]
+    }
+
+
     return (
         <div className="App">
 
             {todoLists.map(tl => {
-
                 let tasksForTodolist = tasksObj[tl.id];
 
                 if (tl.filter === "active") {
@@ -103,6 +116,7 @@ function App() {
                         addTask={addTask}
                         changeTaskStatus={changeStatus}
                         filter={tl.filter}
+                        removeTodolist={removeTodolist}
                     />
                 )
             })
